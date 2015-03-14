@@ -165,6 +165,7 @@ emit(What, State = #session{callback = Callback,
                 case What of
                     init         -> Callback:sockjs_init(Handle, UserState);
                     {recv, Data} -> Callback:sockjs_handle(Handle, Data, UserState);
+                    {info, Info} -> Callback:sockjs_info(Handle, Info, UserState);
                     closed       -> Callback:sockjs_terminate(Handle, UserState)
                 end
         end,
@@ -295,6 +296,7 @@ handle_info(heartbeat_triggered, State = #session{response_pid = RPid}) when RPi
 handle_info(Info, State) ->
     {stop, {odd_info, Info}, State}.
 
+    {noreply, emit({info, Info}, State)}.
 
 terminate(_, State = #session{id = SessionId}) ->
     ets:delete(?ETS, SessionId),
