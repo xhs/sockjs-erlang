@@ -3,7 +3,7 @@
 -behaviour(sockjs_service).
 
 -export([init_state/1]).
--export([sockjs_init/2, sockjs_handle/3, sockjs_terminate/2]).
+-export([sockjs_init/2, sockjs_handle/3, sockjs_info/3, sockjs_terminate/2]).
 
 -record(service, {callback, state, vconn}).
 
@@ -28,6 +28,9 @@ sockjs_handle(Conn, Data, {Services, Channels}) ->
         _Else ->
             {ok, {Services, Channels}}
     end.
+
+sockjs_info(_Conn, _Info, State) ->
+    {ok, State}.
 
 sockjs_terminate(_Conn, {Services, Channels}) ->
     _ = [ {emit(closed, Channel)} ||
